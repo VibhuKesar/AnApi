@@ -67,14 +67,14 @@ def workspaceId():
 	workspace_names = requests.get('https://api.anaplan.com/1/3/workspaces/', headers = getHeaders, data=json.dumps({'localeName': 'en_US'}))
 
 	#showing on the html page
-	f_workspace_names = workspace_names.text.encode("utf-8")
-	li = eval(f_workspace_names)
-	length_import =  len(li)
-	print(li[1]['name'])
+	f_workspace_names = workspace_names.text.encode('ascii', 'ignore')
+	lis = eval(f_workspace_names)
+	length_import =  len(lis)
+	# print(li[1]['name'])
 	if formw.validate_on_submit():
 		return redirect(url_for('modelId'))
 
-	return render_template('dashboard_w.html', form=formw, name=name, li=li, length_import=length_import)
+	return render_template('dashboard_w.html', form=formw, name=name, lis=lis, length_import=length_import)
 
 
 @app.route('/modelId', methods = ['GET', 'POST'])
@@ -84,6 +84,9 @@ def modelId():
 	name = global_user
 
 	wid = formw.w_id.data
+
+	global f_wid
+	f_wid = wid
 
 	credentials = global_user + ":" + global_password
 
@@ -97,7 +100,7 @@ def modelId():
 	model_names = requests.get('https://api.anaplan.com/1/3/workspaces/' + wid + '/models/', headers=getHeaders, data=json.dumps({'localeName': 'en_US'}))
 
 	#showing on the html page
-	f_model_names = model_names.text.encode('utf-8')
+	f_model_names = model_names.text.encode('ascii', 'ignore')
 	li = eval(f_model_names)
 	length_import =  len(li)
 
@@ -116,6 +119,9 @@ def dashboard():
 	wid = formw.w_id.data
 	mid = formm.m_id.data
 
+	global f_mid
+	f_mid = mid
+
 	name = global_user
 
 	credentials = global_user + ":" + global_password
@@ -127,10 +133,9 @@ def dashboard():
     		'Content-Type' : 'application/json'
 	}	
 
-	import_names = requests.get('https://api.anaplan.com/1/3/workspaces/' + wid + '/models/' + mid + '/imports/', headers=getHeaders, data=json.dumps({'localeName': 'en_US'}))
-
+	import_names = requests.get('https://api.anaplan.com/1/3/workspaces/'+ f_wid +'/models/' +  f_mid +'/imports/', headers=getHeaders, data=json.dumps({'localeName': 'en_US'}))
 	
-	f_import_names = import_names.text.encode('utf-8')
+	f_import_names = import_names.text.encode('ascii', 'ignore')
 	print(f_import_names)
 	li = eval(f_import_names)
 	length_import = len(li) #length of Import Name
@@ -160,9 +165,9 @@ def status():
     		'Content-Type' : 'application/json'
 	}
 
-	getProcesses = requests.post('https://api.anaplan.com/1/3/workspaces/' + wid + '/models/'+ mid +'/imports/' + nameid + '/tasks/', headers=getHeaders, data=json.dumps({'localeName': 'en_US'}))
+	getProcesses = requests.post('https://api.anaplan.com/1/3/workspaces/' + f_wid + '/models/'+ f_mid +'/imports/' + nameid + '/tasks/', headers=getHeaders, data=json.dumps({'localeName': 'en_US'}))
 
-	name_action = requests.get('https://api.anaplan.com/1/3/workspaces/' + wid + '/models/'+ mid +'/imports/' + nameid, headers=getHeaders, data=json.dumps({'localeName': 'en_US'}))
+	name_action = requests.get('https://api.anaplan.com/1/3/workspaces/' + f_wid + '/models/'+ f_mid +'/imports/' + nameid, headers=getHeaders, data=json.dumps({'localeName': 'en_US'}))
 
 	f_action_name = name_action.text.encode('utf-8')
 
