@@ -179,7 +179,7 @@ def status():
 		status = "Status: Success"
 		mail= smtplib.SMTP('smtp.gmail.com',587)
 		mail.starttls()
-		mail.login('testanaplanapi@gmail.com','Password') # correct password
+		mail.login('testanaplanapi@gmail.com','Testing01')
 		content = send_name+" The action was successful. The user who initiated is: "+global_user
 		message = 'Subject: {}\n\n{}'.format(content, "PROCESS INITIATED")
 		mail.sendmail('testanaplanapi@gmail.com',global_user,message)
@@ -188,8 +188,8 @@ def status():
 	else:
 		status = "Status: No Success"
 		mail= smtplib.SMTP('smtp.gmail.com',587)
-		mail.starttls() 
-		mail.login('testanaplanapi@gmail.com','Password') #correct Password
+		mail.starttls()
+		mail.login('testanaplanapi@gmail.com','Testing01')
 		content = send_name+" The action was not successful. The user who initiated is: "+global_user
 		message = 'Subject: {}\n\n{}'.format(content, "PROCESS INITIATED")
 		mail.sendmail('testanaplanapi@gmail.com',global_user,message)
@@ -202,4 +202,4 @@ def logout():
 	return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=False)
